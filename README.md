@@ -18,6 +18,9 @@ This powershell script schedules a task that will download and execute Invoke-Sh
 This means that the only file that touches disk during this attack is the initial persist.ps1, which deletes itself after 
 creating the task...so after the attack is complete, you have persistence on the system with no artifact on disk.
 
+
+I also took the x86/x64 check out of the macro. Invoke-Shellcode now automatically checks it for you.
+
 **Thanks Raphael (@armitagehacker) for posting a blogpost about this persistence method.
 **Thanks Matt (@mattifestation) for creating Invoke-Shellcode and your persistence modules :-)
 
