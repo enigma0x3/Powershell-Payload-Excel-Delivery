@@ -1,7 +1,8 @@
 New-Powershell-Payload-Excel-Delivery
 =====================================
 
-This attack uses Invoke-Shellcode to execute a payload in memory.
+This attack uses Invoke-Shellcode to execute a payload in memory. Please note that the powershell commands in the macro
+can be encoded.
 
 For this to work, Invoke-Shellcode and persist.ps1 need to be accessible by the target (webserver, ect).
 
@@ -24,3 +25,9 @@ I also took the x86/x64 check out of the macro. Invoke-Shellcode now automatical
 **Thanks Raphael (@armitagehacker) for posting a blogpost about this persistence method.
 **Thanks Matt (@mattifestation) for creating Invoke-Shellcode and your persistence modules :-)
 
+1/10/2013 Update
+=======================================
+Changed persist methods once again. This time, it never drops anything to disk. Once the macro is ran, you get a shell
+and persistence to the machine via a scheduled task and a registry entry. 
+
+All of this happens without dropping a single file to disk.
