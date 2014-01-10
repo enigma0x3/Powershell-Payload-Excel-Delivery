@@ -28,6 +28,6 @@ I also took the x86/x64 check out of the macro. Invoke-Shellcode now automatical
 1/10/2013 Update
 =======================================
 Changed persist methods once again. This time, it never drops anything to disk. Once the macro is ran, you get a shell
-and persistence to the machine via a scheduled task and a registry entry. 
+and persistence to the machine via a scheduled task.
 
 All of this happens without dropping a single file to disk.
