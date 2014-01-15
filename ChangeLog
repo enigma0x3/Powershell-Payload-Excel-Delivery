@@ -1,10 +1,3 @@
-1/14/2014 Update
-=======================================
-I added a Group Policy proxy bypass. Details are here:
-http://enigma0x3.wordpress.com/2014/01/15/new-feature-added-to-powershell-payload-excel-delivery/
-
-
-
 1/10/2013 Update
 =======================================
 Changed persist methods once again. This time, it never drops anything to disk. Once the macro is ran, you get a shell
