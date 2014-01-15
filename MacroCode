@@ -2,10 +2,10 @@
 ' Twitter: @enigma0x3
 
 Sub Auto_Open()
-Proxy
+
 Execute
 Persist
-ProxyKillTask
+
 End Sub
 
 
